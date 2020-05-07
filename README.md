@@ -1,6 +1,6 @@
 ## TimeVR
 
-As this is a C++ Unreal project, you will need to install Visual Studio as well as the Unreal Engine. [This guide]https://docs.unrealengine.com/en-US/Programming/Development/VisualStudioSetup/index.html) should show you which options to select when installing Visual Studio (specifically, you need to check the 'Game development with C++' option). 
+As this is a C++ Unreal project, you will need to install Visual Studio as well as the Unreal Engine. [This guide](https://docs.unrealengine.com/en-US/Programming/Development/VisualStudioSetup/index.html) should show you which options to select when installing Visual Studio (specifically, you need to check the 'Game development with C++' option). 
 
 - Unreal Engine version: 4.24.3  
 - Visual Studio version: 16.5.4
@@ -22,4 +22,4 @@ For the moment you will need to build the project locally in order to play, but 
 
 #### Contributing to the project
 
-If you ar efamiliar with Git, feel free to submit PRs with any changes or addition. If not, someone in the channel should be able to show you how to get started. Finally, feel free to simply share assets ect in the channel if that;s preferred.
+If you are familiar with Git, feel free to submit PRs with any changes or addition. If not, someone in the channel should be able to show you how to get started. Finally, feel free to simply share assets ect in the channel if that's preferred.
