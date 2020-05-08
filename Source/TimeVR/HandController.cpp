@@ -32,20 +32,36 @@ void AHandController::Tick(float DeltaTime)
 
 void AHandController::SetHand(FName Hand) {
 	MotionController->SetTrackingMotionSource(Hand);
-	if (Hand == "EControllerHand::Left") {
+	if (Hand == "Left") {
 		MCHand = EControllerHand::Left;
+		hand = "Left hand";
 	}
 	else {
 		MCHand = EControllerHand::Right;
+		hand = "Right hand";
 	}
+}
+
+void AHandController::Grip()
+{
+	if (!bCanPickup) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("GRABBING!"));
+}
+
+void AHandController::Release()
+{
+	UE_LOG(LogTemp, Warning, TEXT("RELEASING!"));
 }
 
 void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor) 
 {
-	UE_LOG(LogTemp, Warning, TEXT("Overlap"));
+	UE_LOG(LogTemp, Warning, TEXT("%s hand hit %s"), *hand, *OverlappedActor->GetName());
+
 	bool bNewCanPickup = CanPickup();
+	
 	if (!bCanPickup && bNewCanPickup) {
-		UE_LOG(LogTemp, Warning, TEXT("Can Pickup!"));
+
 		APawn* Pawn = Cast<APawn>(GetAttachParentActor());
 		if (Pawn != nullptr) {
 
@@ -61,7 +77,6 @@ void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 void AHandController::ActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	bCanPickup = CanPickup();
-	UE_LOG(LogTemp, Warning, TEXT("EndOverlap"));
 }
 
 bool AHandController::CanPickup() const
@@ -70,7 +85,9 @@ bool AHandController::CanPickup() const
 	GetOverlappingActors(OverlappingActors);
 
 	for (AActor* OverlappingActor : OverlappingActors) {
-		if (OverlappingActor->ActorHasTag(TEXT("Pickup"))) return true;
+		if (OverlappingActor->ActorHasTag(TEXT("Pickup"))) {
+			return true;
+		}
 	}
 	return false;
 }

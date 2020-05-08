@@ -19,6 +19,9 @@ public:
 
 	void SetHand(FName hand);
 
+	void Grip();
+	void Release();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,6 +42,8 @@ private:
 	// helpers
 	bool CanPickup() const;
 
+
+	UPROPERTY(VisibleAnywhere)
 	EControllerHand MCHand;
 
 	// Default sub object
@@ -51,5 +56,7 @@ private:
 
 	// State
 	bool bCanPickup = false;
+
+	FString hand;
 
 };

@@ -15,6 +15,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Curves/CurveFloat.h"
 #include "IHeadMountedDisplayModule.h"
+#include "HandController.h"
 #include "VRCharacter.generated.h"
 
 UCLASS()
@@ -48,6 +49,12 @@ private: // Configuration Parameters
 
 	void MoveForward(float throttle);
 	void MoveRight(float throttle);
+	
+	void GripLeft() { LeftController->Grip(); }
+	void ReleaseLeft() { LeftController->Release(); }
+	void GripRight() { RightController->Grip(); }
+	void ReleaseRight() { RightController->Release(); }
+
 	void CameraX(float speed);
 	void CameraY(float speed);
 
