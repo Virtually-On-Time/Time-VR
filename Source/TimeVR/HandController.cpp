@@ -44,9 +44,20 @@ void AHandController::SetHand(FName Hand) {
 
 void AHandController::Grip()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Gripping!"));
 	if (!bCanPickup) return;
 
 	UE_LOG(LogTemp, Warning, TEXT("GRABBING!"));
+
+	// Find components
+	TArray<UPrimitiveComponent*>OverlappingComponents;
+	GetOverlappingComponents(OverlappingComponents);
+
+	for (UPrimitiveComponent* Component : OverlappingComponents) {
+		
+	}
+
+	
 }
 
 void AHandController::Release()
@@ -58,7 +69,7 @@ void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s hand hit %s"), *hand, *OverlappedActor->GetName());
 
-	bool bNewCanPickup = CanPickup();
+	bool bNewCanPickup = CanPickupComponent();
 	
 	if (!bCanPickup && bNewCanPickup) {
 
@@ -76,7 +87,8 @@ void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 
 void AHandController::ActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	bCanPickup = CanPickup();
+	bCanPickup = CanPickupComponent();
+	UE_LOG(LogTemp, Warning, TEXT("End Overlap!"));
 }
 
 bool AHandController::CanPickup() const
@@ -89,5 +101,20 @@ bool AHandController::CanPickup() const
 			return true;
 		}
 	}
+
+	return false;
+}
+
+bool AHandController::CanPickupComponent() const
+{
+	TArray<UPrimitiveComponent*>OverlappingComponents;
+	GetOverlappingComponents(OverlappingComponents);
+
+	for (UPrimitiveComponent* Component : OverlappingComponents) {
+
+		UE_LOG(LogTemp, Warning, TEXT("EndClass %s"), *Component->GetName());
+		return true;
+	}
+
 	return false;
 }

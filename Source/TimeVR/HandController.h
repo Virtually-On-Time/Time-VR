@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/ActorComponent.h"
 #include "MotionControllerComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "InputCoreTypes.h"
 #include "HandController.generated.h"
 
@@ -17,18 +19,16 @@ public:
 	// Sets default values for this actor's properties
 	AHandController();
 
-	void SetHand(FName hand);
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
+	void SetHand(FName hand);
 	void Grip();
 	void Release();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 private:
 	// Callbacks
@@ -41,7 +41,9 @@ private:
 
 	// helpers
 	bool CanPickup() const;
+	bool CanPickupComponent() const;
 
+	FString hand;
 
 	UPROPERTY(VisibleAnywhere)
 	EControllerHand MCHand;
@@ -56,7 +58,4 @@ private:
 
 	// State
 	bool bCanPickup = false;
-
-	FString hand;
-
 };
