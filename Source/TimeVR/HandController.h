@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
 #include "Components/ActorComponent.h"
+#include "GameFramework/Actor.h"
+#include "InputCoreTypes.h"
 #include "MotionControllerComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
-#include "InputCoreTypes.h"
 #include "HandController.generated.h"
 
 UCLASS()
@@ -31,6 +31,19 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	// Default sub object
+	UPROPERTY(VisibleAnywhere)
+	class UMotionControllerComponent* MotionController;
+
+	// Parameters
+	UPROPERTY(EditDefaultsOnly)
+	class UHapticFeedbackEffect_Base* HapticEffect;
+
+	class UPhysicsHandleComponent* PhysicsHandle = nullptr;
+
+	UPROPERTY(VisibleAnywhere)
+	EControllerHand MCHand;
+
 	// Callbacks
 
 	UFUNCTION()
@@ -39,22 +52,16 @@ private:
 	UFUNCTION()
 	void ActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
-	// helpers
+	// Helpers
+	FString GetHandName();
 	bool CanPickup() const;
-	bool CanPickupComponent() const;
+	void FindPhysicsHandle();
 
-	FString hand;
+	// Return first actor with physics
+	FHitResult GetFirstPhysicsBodyInReach() const;
 
-	UPROPERTY(VisibleAnywhere)
-	EControllerHand MCHand;
-
-	// Default sub object
-	UPROPERTY(VisibleAnywhere)
-	class UMotionControllerComponent* MotionController;
-
-	// Parameters
-	UPROPERTY(EditDefaultsOnly)
-	class UHapticFeedbackEffect_Base* HapticEffect;
+	// Return the LineTraceEnd
+	FVector GetHandReach() const;
 
 	// State
 	bool bCanPickup = false;

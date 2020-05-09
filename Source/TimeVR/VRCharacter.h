@@ -4,18 +4,18 @@
 
 
 #include "CoreMinimal.h"
-#include "Components/InputComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "GameFramework/PlayerController.h"
-#include "TimerManager.h"
-#include "GameFramework/Character.h"
-#include "NavigationSystem.h"
+#include "Components/InputComponent.h"
 #include "Components/PostProcessComponent.h"
 #include "Components/SplineComponent.h"
-#include "Materials/MaterialInstanceDynamic.h"
 #include "Curves/CurveFloat.h"
-#include "IHeadMountedDisplayModule.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/PlayerController.h"
 #include "HandController.h"
+#include "IHeadMountedDisplayModule.h"
+#include "TimerManager.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "NavigationSystem.h"
 #include "VRCharacter.generated.h"
 
 UCLASS()

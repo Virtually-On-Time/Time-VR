@@ -2,6 +2,7 @@
 
 
 #include "HandController.h"
+#include "DrawDebugHelpers.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 
@@ -11,6 +12,7 @@ AHandController::AHandController()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Setup MotionController
 	MotionController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("MotionController"));
 	SetRootComponent(MotionController);
 }
@@ -20,56 +22,62 @@ void AHandController::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Subscribe to overlap events
 	OnActorBeginOverlap.AddDynamic(this, &AHandController::ActorBeginOverlap);
 	OnActorEndOverlap.AddDynamic(this, &AHandController::ActorEndOverlap);
+
+	FindPhysicsHandle();
 }
 
 // Called every frame
 void AHandController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (PhysicsHandle->GrabbedComponent) {
+		PhysicsHandle->SetTargetLocation(GetHandReach());
+	}
 }
 
 void AHandController::SetHand(FName Hand) {
 	MotionController->SetTrackingMotionSource(Hand);
 	if (Hand == "Left") {
 		MCHand = EControllerHand::Left;
-		hand = "Left hand";
 	}
 	else {
 		MCHand = EControllerHand::Right;
-		hand = "Right hand";
 	}
 }
 
 void AHandController::Grip()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Gripping!"));
-	if (!bCanPickup) return;
+	//if (!bCanPickup) return;
 
-	UE_LOG(LogTemp, Warning, TEXT("GRABBING!"));
+	FHitResult HitResult = GetFirstPhysicsBodyInReach();
+	UPrimitiveComponent* ComponentToGrab = HitResult.GetComponent();
 
-	// Find components
-	TArray<UPrimitiveComponent*>OverlappingComponents;
-	GetOverlappingComponents(OverlappingComponents);
-
-	for (UPrimitiveComponent* Component : OverlappingComponents) {
-		
+	if (HitResult.GetActor()) {
+		PhysicsHandle->GrabComponentAtLocation(
+			ComponentToGrab,
+			NAME_None,
+			HitResult.Location
+		);
 	}
-
-	
 }
 
 void AHandController::Release()
 {
-	UE_LOG(LogTemp, Warning, TEXT("RELEASING!"));
+	if (PhysicsHandle->GrabbedComponent) {
+		//PhysicsHandle->GrabbedComponent->SetSimulatePhysics(false);
+		PhysicsHandle->ReleaseComponent();
+	}
 }
 
 void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor) 
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s hand hit %s"), *hand, *OverlappedActor->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("%s hand hit %s"), *GetHandName(), *OverlappedActor->GetName());
 
-	bool bNewCanPickup = CanPickupComponent();
+	bool bNewCanPickup = CanPickup();
 	
 	if (!bCanPickup && bNewCanPickup) {
 
@@ -87,8 +95,17 @@ void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 
 void AHandController::ActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	bCanPickup = CanPickupComponent();
-	UE_LOG(LogTemp, Warning, TEXT("End Overlap!"));
+	bCanPickup = CanPickup();
+}
+
+FString AHandController::GetHandName()
+{
+	if (MCHand == EControllerHand::Left) {
+		return "Left hand";
+	}
+	else {
+		return "Right hand";
+	}
 }
 
 bool AHandController::CanPickup() const
@@ -101,20 +118,53 @@ bool AHandController::CanPickup() const
 			return true;
 		}
 	}
-
 	return false;
 }
 
-bool AHandController::CanPickupComponent() const
+// Checking for PhysicsHandler
+void AHandController::FindPhysicsHandle()
 {
-	TArray<UPrimitiveComponent*>OverlappingComponents;
-	GetOverlappingComponents(OverlappingComponents);
+	PhysicsHandle = FindComponentByClass<UPhysicsHandleComponent>();
+	if (PhysicsHandle) {}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("PhysicsHandler not Found"));
+	}
+}
 
-	for (UPrimitiveComponent* Component : OverlappingComponents) {
+FHitResult AHandController::GetFirstPhysicsBodyInReach() const
+{
+	FHitResult Hit;
+	// Ray-cast out to a certain distance (Reach)
+	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
 
-		UE_LOG(LogTemp, Warning, TEXT("EndClass %s"), *Component->GetName());
-		return true;
+	GetWorld()->LineTraceSingleByObjectType(
+		OUT Hit,
+		GetActorLocation(),
+		GetHandReach(),
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+		TraceParams
+	);
+
+	/*
+		DrawDebugLine(GetWorld(), ViewPointLocation, GetHandReach(), FColor(0, 255, 0), true, 10.f, 0, 5.f);
+	*/
+
+	// See what it hits
+	AActor* ActorHit = Hit.GetActor();
+
+	if (ActorHit)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Line trace has hit: %s"), *(ActorHit->GetName()))
 	}
 
-	return false;
+	return Hit;
+}
+
+FVector AHandController::GetHandReach() const
+{
+	FVector ViewPointLocation = GetActorLocation();
+	FRotator PlayerViewPointRotation = GetActorRotation();
+	float Reach = 5.0f;
+	
+	return ViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
 }
