@@ -26,11 +26,18 @@ public:
 	void Grip();
 	void Release();
 
+	UPROPERTY(VisibleAnywhere)
+	class UPrimitiveComponent* GrabbedComponent;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
+
+	// Parent
+	class AVRCharacter* Character = nullptr;
+
 	// Default sub object
 	UPROPERTY(VisibleAnywhere)
 	class UMotionControllerComponent* MotionController;
@@ -38,8 +45,6 @@ private:
 	// Parameters
 	UPROPERTY(EditDefaultsOnly)
 	class UHapticFeedbackEffect_Base* HapticEffect;
-
-	class UPhysicsHandleComponent* PhysicsHandle = nullptr;
 
 	UPROPERTY(VisibleAnywhere)
 	EControllerHand MCHand;

@@ -4,6 +4,7 @@
 #include "HandController.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Pawn.h"
+#include "VRCharacter.h"
 #include "GameFramework/PlayerController.h"
 
 // Sets default values
@@ -25,8 +26,6 @@ void AHandController::BeginPlay()
 	// Subscribe to overlap events
 	OnActorBeginOverlap.AddDynamic(this, &AHandController::ActorBeginOverlap);
 	OnActorEndOverlap.AddDynamic(this, &AHandController::ActorEndOverlap);
-
-	FindPhysicsHandle();
 }
 
 // Called every frame
@@ -34,8 +33,9 @@ void AHandController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (PhysicsHandle->GrabbedComponent) {
-		PhysicsHandle->SetTargetLocation(GetHandReach());
+	if (GrabbedComponent) {
+		GrabbedComponent->SetWorldLocation(GetActorLocation());
+		GrabbedComponent->SetWorldRotation(GetActorRotation());
 	}
 }
 
@@ -47,6 +47,15 @@ void AHandController::SetHand(FName Hand) {
 	else {
 		MCHand = EControllerHand::Right;
 	}
+
+	// Cache owner reference
+	Character = Cast<AVRCharacter>(GetOwner());
+	if (Character) {
+
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("No owner found!"));
+	}
 }
 
 void AHandController::Grip()
@@ -57,19 +66,24 @@ void AHandController::Grip()
 	UPrimitiveComponent* ComponentToGrab = HitResult.GetComponent();
 
 	if (HitResult.GetActor()) {
-		PhysicsHandle->GrabComponentAtLocation(
+		/*PhysicsHandle->GrabComponentAtLocation(
 			ComponentToGrab,
 			NAME_None,
 			HitResult.Location
-		);
+		);*/
+		if (Character) {
+			Character->OnItemPickedUp(MCHand, ComponentToGrab->GetUniqueID());
+		}
+		GrabbedComponent = ComponentToGrab;
+		ComponentToGrab->SetSimulatePhysics(false); // TODO: To improve, set custom physics here
 	}
 }
 
 void AHandController::Release()
 {
-	if (PhysicsHandle->GrabbedComponent) {
-		//PhysicsHandle->GrabbedComponent->SetSimulatePhysics(false);
-		PhysicsHandle->ReleaseComponent();
+	if (GrabbedComponent) {
+		GrabbedComponent->SetSimulatePhysics(true);
+		GrabbedComponent = nullptr;
 	}
 }
 
@@ -121,20 +135,9 @@ bool AHandController::CanPickup() const
 	return false;
 }
 
-// Checking for PhysicsHandler
-void AHandController::FindPhysicsHandle()
-{
-	PhysicsHandle = FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle) {}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("PhysicsHandler not Found"));
-	}
-}
-
 FHitResult AHandController::GetFirstPhysicsBodyInReach() const
 {
 	FHitResult Hit;
-	// Ray-cast out to a certain distance (Reach)
 	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
 
 	GetWorld()->LineTraceSingleByObjectType(
@@ -144,10 +147,6 @@ FHitResult AHandController::GetFirstPhysicsBodyInReach() const
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		TraceParams
 	);
-
-	/*
-		DrawDebugLine(GetWorld(), ViewPointLocation, GetHandReach(), FColor(0, 255, 0), true, 10.f, 0, 5.f);
-	*/
 
 	// See what it hits
 	AActor* ActorHit = Hit.GetActor();

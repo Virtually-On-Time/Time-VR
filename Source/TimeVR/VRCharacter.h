@@ -33,6 +33,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void OnItemPickedUp(EControllerHand Hand, int32 Id);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -65,8 +67,6 @@ private: // Configuration Parameters
 	void EndTeleport();
 
 	void CameraFade(float FromAlpha, float ToAlpha, bool ShouldHold);
-
-	void GrabItem();
 
 	// Globals
 

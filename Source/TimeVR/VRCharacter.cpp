@@ -332,3 +332,18 @@ void AVRCharacter::CameraFade(float FromAlpha, float ToAlpha, bool ShouldHold)
 	}
 }
 
+// Release item from other hand
+void AVRCharacter::OnItemPickedUp(EControllerHand Hand, int32 ID)
+{
+	if (Hand == EControllerHand::Left && RightController->GrabbedComponent) {
+		if (RightController->GrabbedComponent->GetUniqueID() == ID) {
+			RightController->Release();
+		}
+	}
+	else if (Hand == EControllerHand::Right && LeftController->GrabbedComponent) {
+		if (LeftController->GrabbedComponent->GetUniqueID() == ID) {
+			LeftController->Release();
+		}
+	}
+}
+
