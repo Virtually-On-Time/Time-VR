@@ -4,17 +4,18 @@
 
 
 #include "CoreMinimal.h"
-#include "Components/InputComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "GameFramework/PlayerController.h"
-#include "TimerManager.h"
-#include "GameFramework/Character.h"
-#include "NavigationSystem.h"
+#include "Components/InputComponent.h"
 #include "Components/PostProcessComponent.h"
 #include "Components/SplineComponent.h"
-#include "Materials/MaterialInstanceDynamic.h"
 #include "Curves/CurveFloat.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/PlayerController.h"
+#include "HandController.h"
 #include "IHeadMountedDisplayModule.h"
+#include "TimerManager.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "NavigationSystem.h"
 #include "VRCharacter.generated.h"
 
 UCLASS()
@@ -26,16 +27,17 @@ public:
 	// Sets default values for this character's properties
 	AVRCharacter();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void OnItemPickedUp(EControllerHand Hand, int32 Id);
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 private: // Configuration Parameters
 
@@ -48,6 +50,12 @@ private: // Configuration Parameters
 
 	void MoveForward(float throttle);
 	void MoveRight(float throttle);
+	
+	void GripLeft() { LeftController->Grip(); }
+	void ReleaseLeft() { LeftController->Release(); }
+	void GripRight() { RightController->Grip(); }
+	void ReleaseRight() { RightController->Release(); }
+
 	void CameraX(float speed);
 	void CameraY(float speed);
 
@@ -59,8 +67,6 @@ private: // Configuration Parameters
 	void EndTeleport();
 
 	void CameraFade(float FromAlpha, float ToAlpha, bool ShouldHold);
-
-	void GrabItem();
 
 	// Globals
 

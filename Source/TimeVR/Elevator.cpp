@@ -34,6 +34,8 @@ void AElevator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// TODO: This is not performant, we should use on trigger overlap instead, or simply use control panal
+
 	if (!Trigger)
 	{
 		return;

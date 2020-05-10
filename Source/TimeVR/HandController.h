@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
 #include "GameFramework/Actor.h"
-#include "MotionControllerComponent.h"
 #include "InputCoreTypes.h"
+#include "MotionControllerComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "HandController.generated.h"
 
 UCLASS()
@@ -17,29 +19,24 @@ public:
 	// Sets default values for this actor's properties
 	AHandController();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 	void SetHand(FName hand);
+	void Grip();
+	void Release();
+
+	UPROPERTY(VisibleAnywhere)
+	class UPrimitiveComponent* GrabbedComponent;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 private:
-	// Callbacks
 
-	UFUNCTION()
-	void ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
-
-	UFUNCTION()
-	void ActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
-
-	// helpers
-	bool CanPickup() const;
-
-	EControllerHand MCHand;
+	// Parent
+	class AVRCharacter* Character = nullptr;
 
 	// Default sub object
 	UPROPERTY(VisibleAnywhere)
@@ -49,7 +46,28 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	class UHapticFeedbackEffect_Base* HapticEffect;
 
+	UPROPERTY(VisibleAnywhere)
+	EControllerHand MCHand;
+
+	// Callbacks
+
+	UFUNCTION()
+	void ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
+	UFUNCTION()
+	void ActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
+	// Helpers
+	FString GetHandName();
+	bool CanPickup() const;
+	void FindPhysicsHandle();
+
+	// Return first actor with physics
+	FHitResult GetFirstPhysicsBodyInReach() const;
+
+	// Return the LineTraceEnd
+	FVector GetHandReach() const;
+
 	// State
 	bool bCanPickup = false;
-
 };
