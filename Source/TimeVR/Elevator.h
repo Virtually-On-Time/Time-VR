@@ -35,10 +35,10 @@ private:
 	float CurrentHeight;
 
 	UPROPERTY(EditAnywhere)
-		float MoveSpeed;
+	float MoveSpeed;
 
 	UPROPERTY(EditAnywhere)
-		float Height;
+	float Height;
 
 	ATriggerBox* Trigger;
 	APawn* Player;
