@@ -26,6 +26,9 @@ AVRCharacter::AVRCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(VRRoot);
 
+	static ConstructorHelpers::FObjectFinder<UClass> ClassFinder(TEXT("Blueprint'/Game/Blueprints/BP_Elevator.BP_Elevator'"));
+	ElevatorClass = ClassFinder.Object;
+
 	if (bIsVR) {
 
 		InvalidTeleportMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("InvalidTeleportMesh"));
@@ -69,6 +72,9 @@ void AVRCharacter::BeginPlay()
 			RightController->SetHand(FXRMotionControllerBase::RightHandSourceId);
 		}
 	}
+
+	FRotator Rotation = FRotator(0.f, 0.f, 0.f);
+	Elevator = Cast<AElevator>(GetWorld()->SpawnActor(ElevatorClass, &ElevatorStart, &Rotation));
 }
 
 // Called every frame
@@ -237,6 +243,8 @@ void AVRCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis(TEXT("MouseY"), this, &AVRCharacter::CameraY);
 	PlayerInputComponent->BindAxis(TEXT("Forward"), this, &AVRCharacter::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("Right"), this, &AVRCharacter::MoveRight);
+	PlayerInputComponent->BindAction(TEXT("ElevatorUp"), EInputEvent::IE_Pressed, this, &AVRCharacter::ElevatorUp);
+	PlayerInputComponent->BindAction(TEXT("ElevatorDown"), EInputEvent::IE_Pressed, this, &AVRCharacter::ElevatorDown);
 }
 
 void AVRCharacter::MoveForward(float throttle)
@@ -347,3 +355,12 @@ void AVRCharacter::OnItemPickedUp(EControllerHand Hand, int32 ID)
 	}
 }
 
+void AVRCharacter::ElevatorUp()
+{
+	Elevator->InputUp();
+}
+
+void AVRCharacter::ElevatorDown()
+{
+	Elevator->InputDown();
+}

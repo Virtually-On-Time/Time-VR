@@ -26,7 +26,7 @@ void AElevator::BeginPlay()
 	OriginalX = this->GetActorLocation().X;
 	OriginalY = this->GetActorLocation().Y;
 
-	Height += OriginalHeight;
+	CurrentFloor = 0;
 }
 
 // Called every frame
@@ -34,33 +34,32 @@ void AElevator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// TODO: This is not performant, we should use on trigger overlap instead, or simply use control panal
+	// TODO: This is not performant, we should use on trigger overlap instead, or simply use control panel
 
 	if (!Trigger)
 	{
 		return;
 	}
 
-	if (Trigger->IsOverlappingActor(Player))
-	{
-		MoveUp(DeltaTime);
-	}
-	else
-	{
-		MoveDown(DeltaTime);
-	}
+	//if (Trigger->IsOverlappingActor(Player))
+	//{
+		Move(DeltaTime, OriginalHeight + FloorHeight * CurrentFloor);
+	//}
 }
 
-void AElevator::MoveUp(float DeltaTime)
+void AElevator::Move(float DeltaTime, float TargetHeight)
 {
 	CurrentHeight = this->GetActorLocation().Z;
 
-	this->SetActorLocation(FVector(OriginalX, OriginalY, FMath::FInterpConstantTo(CurrentHeight, Height, DeltaTime, MoveSpeed)));
+	this->SetActorLocation(FVector(OriginalX, OriginalY, FMath::FInterpConstantTo(CurrentHeight, TargetHeight, DeltaTime, MoveSpeed)));
 }
 
-void AElevator::MoveDown(float DeltaTime)
+void AElevator::InputUp()
 {
-	CurrentHeight = this->GetActorLocation().Z;
+	CurrentFloor++;
+}
 
-	this->SetActorLocation(FVector(OriginalX, OriginalY, FMath::FInterpConstantTo(CurrentHeight, OriginalHeight, DeltaTime, MoveSpeed)));
+void AElevator::InputDown()
+{
+	CurrentFloor--;
 }

@@ -27,6 +27,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void InputUp();
+	void InputDown();
 
 private:
 
@@ -35,14 +37,18 @@ private:
 	float CurrentHeight;
 
 	UPROPERTY(EditAnywhere)
-	float MoveSpeed;
+		float MoveSpeed;
 
 	UPROPERTY(EditAnywhere)
-	float Height;
+		float FloorHeight;
+
+	UPROPERTY(EditAnywhere)
+		int NumFloors;
+
+	int CurrentFloor;
 
 	ATriggerBox* Trigger;
 	APawn* Player;
 
-	void MoveUp(float DeltaTime);
-	void MoveDown(float DeltaTime);
+	void Move(float DeltaTime, float TargetHeight);
 };
