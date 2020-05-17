@@ -26,8 +26,7 @@ AVRCharacter::AVRCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(VRRoot);
 
-	static ConstructorHelpers::FObjectFinder<UClass> ClassFinder(TEXT("Blueprint'/Game/Blueprints/BP_Elevator.BP_Elevator'"));
-	ElevatorClass = ClassFinder.Object;
+	Elevator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Elevator"));
 
 	if (bIsVR) {
 
@@ -53,6 +52,9 @@ void AVRCharacter::BeginPlay()
 
 	// Setup global references
 	PlayerController = Cast<APlayerController>(GetController());
+	Elevator->SetStaticMesh(ElevatorMesh);
+	Elevator->SetRelativeLocation(ElevatorSpawn);
+	ElevatorFloor = 0;
 
 	// Set up motion controllers
 	if (bIsVR) {
@@ -72,15 +74,15 @@ void AVRCharacter::BeginPlay()
 			RightController->SetHand(FXRMotionControllerBase::RightHandSourceId);
 		}
 	}
-
-	FRotator Rotation = FRotator(0.f, 0.f, 0.f);
-	Elevator = Cast<AElevator>(GetWorld()->SpawnActor(ElevatorClass, &ElevatorStart, &Rotation));
 }
 
 // Called every frame
 void AVRCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	FVector CurrentLocation = Elevator->GetRelativeLocation();
+	Elevator->SetWorldLocation(FVector(CurrentLocation.X, CurrentLocation.Y, FMath::FInterpConstantTo(CurrentLocation.Z, ElevatorSpawn.Z + ElevatorFloor * DistanceBetweenFloors, DeltaTime, 100.f)));
 
 	// The following logic is only required for VR
 	if (!bIsVR) return;
@@ -357,10 +359,16 @@ void AVRCharacter::OnItemPickedUp(EControllerHand Hand, int32 ID)
 
 void AVRCharacter::ElevatorUp()
 {
-	Elevator->InputUp();
+	if (ElevatorFloor < MaxFloors)
+	{
+		ElevatorFloor++;
+	}
 }
 
 void AVRCharacter::ElevatorDown()
 {
-	Elevator->InputDown();
+	if (ElevatorFloor > 0)
+	{
+		ElevatorFloor--;
+	}
 }

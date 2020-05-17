@@ -18,6 +18,7 @@
 #include "NavigationSystem.h"
 #include "Elevator.h"
 #include "EngineUtils.h"
+#include "Math/UnrealMathUtility.h"
 #include "VRCharacter.generated.h"
 
 UCLASS()
@@ -36,9 +37,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void OnItemPickedUp(EControllerHand Hand, int32 Id);
-
-	UPROPERTY(BlueprintReadWrite)
-		TSubclassOf<AElevator> ElevatorClass;
 
 protected:
 	// Called when the game starts or when spawned
@@ -71,10 +69,10 @@ private: // Configuration Parameters
 	void DoTeleport();
 	void EndTeleport();
 
+	void CameraFade(float FromAlpha, float ToAlpha, bool ShouldHold);
+
 	void ElevatorUp();
 	void ElevatorDown();
-
-	void CameraFade(float FromAlpha, float ToAlpha, bool ShouldHold);
 
 	// Globals
 
@@ -90,11 +88,9 @@ private: // Configuration Parameters
 
 	bool bIsVR;
 	
+	int ElevatorFloor;
 
 	// References
-
-	UPROPERTY(EditAnywhere)
-	AElevator* Elevator;
 
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* Camera;
@@ -117,13 +113,13 @@ private: // Configuration Parameters
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* InvalidTeleportMesh;
 
+	UPROPERTY(VisibleAnywhere, Category="Elevator")
+	class UStaticMeshComponent* Elevator;
+
 	UPROPERTY(VisibleAnywhere)
 	TArray<class USplineMeshComponent*> ArcMeshObjctPool;
 
 	// Editable
-
-	UPROPERTY(EditAnywhere)
-	FVector ElevatorStart;
 
 	UPROPERTY(EditAnywhere)
 	float TeleportProjectileSpeed = 1000;
@@ -146,6 +142,14 @@ private: // Configuration Parameters
 	UPROPERTY(EditAnywhere)
 	float UnitsBetweenlevels = 4000.0f;
 
+	UPROPERTY(EditAnywhere, Category="Elevator")
+	FVector ElevatorSpawn;
+
+	UPROPERTY(EditAnywhere, Category="Elevator")
+	int MaxFloors;
+
+	UPROPERTY(EditAnywhere, Category="Elevator")
+	float DistanceBetweenFloors;
 
 	// Editable by Blueprint
 
@@ -154,6 +158,9 @@ private: // Configuration Parameters
 
 	UPROPERTY(EditDefaultsOnly)
 	UMaterialInterface* TeleportArcMaterial;
+
+	UPROPERTY(EditDefaultsOnly, Category="Elevator")
+	UStaticMesh* ElevatorMesh;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AHandController> HandControllerClass;
