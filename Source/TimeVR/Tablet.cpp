@@ -16,14 +16,11 @@ void ATablet::BeginPlay()
 {
 	Super::BeginPlay();
 	
-<<<<<<< Updated upstream
 	AudioComponent = FindComponentByClass<UAudioComponent>();
 	CurrentSound = 0;
 	MaxAllowedSound = 0;
 	CurrentTime = 0.f;
 	AudioComponent->SetSound(Sounds[CurrentSound]);
-=======
->>>>>>> Stashed changes
 }
 
 // Called every frame
@@ -31,7 +28,6 @@ void ATablet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-<<<<<<< Updated upstream
 	if (bIsNewFile)
 	{
 		// blinking code goes here
@@ -84,7 +80,3 @@ void ATablet::AddNewFile()
 		UE_LOG(LogTemp, Error, TEXT("Cannot add new file, exceeding array size!"));
 	}
 }
-=======
-}
-
->>>>>>> Stashed changes
