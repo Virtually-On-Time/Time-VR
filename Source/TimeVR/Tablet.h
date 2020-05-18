@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Sound/SoundWave.h"
+<<<<<<< Updated upstream
 #include "Components/AudioComponent.h"
+=======
+>>>>>>> Stashed changes
 
 #include "Tablet.generated.h"
 
@@ -26,6 +29,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+<<<<<<< Updated upstream
 	float CurrentTime;
 	void Play();
 	void Pause();
@@ -41,4 +45,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="AudioFiles")
 	TArray<USoundWave*> Sounds;
+=======
+	UPROPERTY(EditAnywhere)
+	TArray<USoundWave>* Sounds;
+>>>>>>> Stashed changes
 };
