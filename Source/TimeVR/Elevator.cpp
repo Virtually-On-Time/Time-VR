@@ -15,52 +15,37 @@ AElevator::AElevator()
 void AElevator::BeginPlay()
 {
 	Super::BeginPlay();
-
-	Trigger = GetWorld()->SpawnActor<ATriggerBox>(FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z + 190), FRotator(0, 0, 0));
-	Trigger->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-	Trigger->SetActorScale3D(FVector(2.5f, 2.5f, 4.5f));
-
-	Player = GetWorld()->GetFirstPlayerController()->GetPawn();	
-
-	OriginalHeight = this->GetActorLocation().Z;
-	OriginalX = this->GetActorLocation().X;
-	OriginalY = this->GetActorLocation().Y;
-
-	Height += OriginalHeight;
+	CurrentFloor = 0;
+	OriginalPosition = GetActorLocation();
 }
 
 // Called every frame
 void AElevator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	Move(DeltaTime, OriginalPosition.Z + CurrentFloor * DistanceBetweenFloors);
+}
 
-	// TODO: This is not performant, we should use on trigger overlap instead, or simply use control panal
-
-	if (!Trigger)
+void AElevator::FloorUp()
+{
+	if (CurrentFloor != MaxFloors)
 	{
-		return;
-	}
-
-	if (Trigger->IsOverlappingActor(Player))
-	{
-		MoveUp(DeltaTime);
-	}
-	else
-	{
-		MoveDown(DeltaTime);
+		CurrentFloor++;
 	}
 }
 
-void AElevator::MoveUp(float DeltaTime)
+void AElevator::FloorDown()
 {
-	CurrentHeight = this->GetActorLocation().Z;
-
-	this->SetActorLocation(FVector(OriginalX, OriginalY, FMath::FInterpConstantTo(CurrentHeight, Height, DeltaTime, MoveSpeed)));
+	if (CurrentFloor != 0)
+	{
+		CurrentFloor--;
+	}
 }
 
-void AElevator::MoveDown(float DeltaTime)
+void AElevator::Move(float DeltaTime, float Height)
 {
-	CurrentHeight = this->GetActorLocation().Z;
-
-	this->SetActorLocation(FVector(OriginalX, OriginalY, FMath::FInterpConstantTo(CurrentHeight, OriginalHeight, DeltaTime, MoveSpeed)));
+	if (Height != GetActorLocation().Z) {
+		SetActorLocation(FVector(OriginalPosition.X, OriginalPosition.Y, FMath::FInterpConstantTo(GetActorLocation().Z, Height, DeltaTime, Speed)));
+	}
 }

@@ -16,6 +16,9 @@
 #include "TimerManager.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "NavigationSystem.h"
+#include "Elevator.h"
+#include "EngineUtils.h"
+#include "Math/UnrealMathUtility.h"
 #include "VRCharacter.generated.h"
 
 UCLASS()
@@ -67,7 +70,6 @@ private: // Configuration Parameters
 	void EndTeleport();
 
 	void CameraFade(float FromAlpha, float ToAlpha, bool ShouldHold);
-
 	// Globals
 
 	APlayerController* PlayerController;
@@ -81,7 +83,6 @@ private: // Configuration Parameters
 	bool bIsInPast = false;
 
 	bool bIsVR;
-	
 
 	// References
 
@@ -131,7 +132,6 @@ private: // Configuration Parameters
 
 	UPROPERTY(EditAnywhere)
 	float UnitsBetweenlevels = 4000.0f;
-
 
 	// Editable by Blueprint
 
