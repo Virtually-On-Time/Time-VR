@@ -141,9 +141,6 @@ private: // Configuration Parameters
 	UPROPERTY(EditDefaultsOnly)
 	UMaterialInterface* TeleportArcMaterial;
 
-	UPROPERTY(EditDefaultsOnly, Category="Elevator")
-	UStaticMesh* ElevatorMesh;
-
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AHandController> HandControllerClass;
 };

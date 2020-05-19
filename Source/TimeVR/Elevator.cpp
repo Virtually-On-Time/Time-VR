@@ -45,5 +45,7 @@ void AElevator::FloorDown()
 
 void AElevator::Move(float DeltaTime, float Height)
 {
-	SetActorLocation(FVector(OriginalPosition.X, OriginalPosition.Y, FMath::FInterpConstantTo(GetActorLocation().Z, Height, DeltaTime, Speed)));
+	if (Height != GetActorLocation().Z) {
+		SetActorLocation(FVector(OriginalPosition.X, OriginalPosition.Y, FMath::FInterpConstantTo(GetActorLocation().Z, Height, DeltaTime, Speed)));
+	}
 }

@@ -28,8 +28,10 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	int MaxFloors;
+	
 	UPROPERTY(EditAnywhere)
 	float DistanceBetweenFloors;
+	
 	UPROPERTY(EditAnywhere)
 	float Speed;
 
@@ -37,6 +39,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
 	void FloorUp();
+
+	UFUNCTION(BlueprintCallable)
 	void FloorDown();
 };
