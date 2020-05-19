@@ -53,7 +53,7 @@ void AVRCharacter::BeginPlay()
 
 	// Set up motion controllers
 	if (bIsVR) {
-		DestinationMarker->SetVisibility(false);
+		DestinationMarker->SetVisibility(true);
 
 		LeftController = GetWorld()->SpawnActor<AHandController>(HandControllerClass);
 		if (LeftController != nullptr) {
