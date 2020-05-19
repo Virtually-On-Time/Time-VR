@@ -26,8 +26,6 @@ AVRCharacter::AVRCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(VRRoot);
 
-	Elevator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Elevator"));
-
 	if (bIsVR) {
 
 		InvalidTeleportMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("InvalidTeleportMesh"));
@@ -52,9 +50,6 @@ void AVRCharacter::BeginPlay()
 
 	// Setup global references
 	PlayerController = Cast<APlayerController>(GetController());
-	Elevator->SetStaticMesh(ElevatorMesh);
-	Elevator->SetRelativeLocation(ElevatorSpawn);
-	ElevatorFloor = 0;
 
 	// Set up motion controllers
 	if (bIsVR) {
@@ -80,9 +75,6 @@ void AVRCharacter::BeginPlay()
 void AVRCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	FVector CurrentLocation = Elevator->GetRelativeLocation();
-	Elevator->SetWorldLocation(FVector(CurrentLocation.X, CurrentLocation.Y, FMath::FInterpConstantTo(CurrentLocation.Z, ElevatorSpawn.Z + ElevatorFloor * DistanceBetweenFloors, DeltaTime, 100.f)));
 
 	// The following logic is only required for VR
 	if (!bIsVR) return;
@@ -245,8 +237,6 @@ void AVRCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis(TEXT("MouseY"), this, &AVRCharacter::CameraY);
 	PlayerInputComponent->BindAxis(TEXT("Forward"), this, &AVRCharacter::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("Right"), this, &AVRCharacter::MoveRight);
-	PlayerInputComponent->BindAction(TEXT("ElevatorUp"), EInputEvent::IE_Pressed, this, &AVRCharacter::ElevatorUp);
-	PlayerInputComponent->BindAction(TEXT("ElevatorDown"), EInputEvent::IE_Pressed, this, &AVRCharacter::ElevatorDown);
 }
 
 void AVRCharacter::MoveForward(float throttle)
@@ -354,21 +344,5 @@ void AVRCharacter::OnItemPickedUp(EControllerHand Hand, int32 ID)
 		if (LeftController->GrabbedComponent->GetUniqueID() == ID) {
 			LeftController->Release();
 		}
-	}
-}
-
-void AVRCharacter::ElevatorUp()
-{
-	if (ElevatorFloor < MaxFloors)
-	{
-		ElevatorFloor++;
-	}
-}
-
-void AVRCharacter::ElevatorDown()
-{
-	if (ElevatorFloor > 0)
-	{
-		ElevatorFloor--;
 	}
 }

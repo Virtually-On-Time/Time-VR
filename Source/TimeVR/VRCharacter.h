@@ -70,10 +70,6 @@ private: // Configuration Parameters
 	void EndTeleport();
 
 	void CameraFade(float FromAlpha, float ToAlpha, bool ShouldHold);
-
-	void ElevatorUp();
-	void ElevatorDown();
-
 	// Globals
 
 	APlayerController* PlayerController;
@@ -87,8 +83,6 @@ private: // Configuration Parameters
 	bool bIsInPast = false;
 
 	bool bIsVR;
-	
-	int ElevatorFloor;
 
 	// References
 
@@ -112,9 +106,6 @@ private: // Configuration Parameters
 
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* InvalidTeleportMesh;
-
-	UPROPERTY(VisibleAnywhere, Category="Elevator")
-	class UStaticMeshComponent* Elevator;
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<class USplineMeshComponent*> ArcMeshObjctPool;
@@ -141,15 +132,6 @@ private: // Configuration Parameters
 
 	UPROPERTY(EditAnywhere)
 	float UnitsBetweenlevels = 4000.0f;
-
-	UPROPERTY(EditAnywhere, Category="Elevator")
-	FVector ElevatorSpawn;
-
-	UPROPERTY(EditAnywhere, Category="Elevator")
-	int MaxFloors;
-
-	UPROPERTY(EditAnywhere, Category="Elevator")
-	float DistanceBetweenFloors;
 
 	// Editable by Blueprint
 

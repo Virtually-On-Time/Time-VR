@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Engine/TriggerBox.h"
-#include "GameFramework/Pawn.h"
 #include "Engine/World.h"
 #include "Math/UnrealMathUtility.h"
 
@@ -23,32 +21,22 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void Move(float DeltaTime, float Height);
+
+	FVector OriginalPosition;
+	int CurrentFloor;
+
+	UPROPERTY(EditAnywhere)
+	int MaxFloors;
+	UPROPERTY(EditAnywhere)
+	float DistanceBetweenFloors;
+	UPROPERTY(EditAnywhere)
+	float Speed;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void InputUp();
-	void InputDown();
 
-private:
-
-	float OriginalHeight;
-	float OriginalX, OriginalY;
-	float CurrentHeight;
-
-	UPROPERTY(EditAnywhere)
-		float MoveSpeed;
-
-	UPROPERTY(EditAnywhere)
-		float FloorHeight;
-
-	UPROPERTY(EditAnywhere)
-		int NumFloors;
-
-	int CurrentFloor;
-
-	ATriggerBox* Trigger;
-	APawn* Player;
-
-	void Move(float DeltaTime, float TargetHeight);
+	void FloorUp();
+	void FloorDown();
 };
