@@ -8,6 +8,7 @@
 #include "InputCoreTypes.h"
 #include "MotionControllerComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Interaction.h"
 #include "HandController.generated.h"
 
 UCLASS()
@@ -61,6 +62,7 @@ private:
 	FString GetHandName();
 	bool CanPickup() const;
 	void FindPhysicsHandle();
+	void SetInteractionOverlap();
 
 	// Return first actor with physics
 	FHitResult GetFirstPhysicsBodyInReach() const;
@@ -70,4 +72,6 @@ private:
 
 	// State
 	bool bCanPickup = false;
+
+	int InteractionOverlap;
 };
