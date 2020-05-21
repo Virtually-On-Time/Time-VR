@@ -30,6 +30,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UPrimitiveComponent* GrabbedComponent;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void InteractionEvent(int IntId);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -62,6 +65,7 @@ private:
 	FString GetHandName();
 	bool CanPickup() const;
 	void FindPhysicsHandle();
+
 	void SetInteractionOverlap();
 
 	// Return first actor with physics
@@ -73,5 +77,5 @@ private:
 	// State
 	bool bCanPickup = false;
 
-	int InteractionOverlap;
+	int32 InteractionOverlap;
 };

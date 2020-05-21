@@ -16,9 +16,6 @@ AHandController::AHandController()
 	// Setup MotionController
 	MotionController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("MotionController"));
 	SetRootComponent(MotionController);
-
-	InteractionOverlap = 0;
-
 }
 
 // Called when the game starts or when spawned
@@ -81,6 +78,8 @@ void AHandController::Grip()
 		GrabbedComponent = ComponentToGrab;
 		ComponentToGrab->SetSimulatePhysics(false); // TODO: To improve, set custom physics here
 	}
+
+	InteractionEvent(InteractionOverlap);
 }
 
 void AHandController::Release()
@@ -96,6 +95,7 @@ void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 	UE_LOG(LogTemp, Warning, TEXT("%s hand hit %s"), *GetHandName(), *OverlappedActor->GetName());
 
 	bool bCanInteract = CanPickup();
+	SetInteractionOverlap();
 	
 	if (!bCanPickup && bCanInteract) {
 
@@ -114,11 +114,8 @@ void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 void AHandController::ActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	bCanPickup = CanPickup();
-	SetInteractionOverlap();
 
-	if (OverlappedActor->ActorHasTag(TEXT("Interaction"))) {
-		InteractionOverlap = 0;
-	}
+	InteractionOverlap = 0;
 }
 
 FString AHandController::GetHandName()
