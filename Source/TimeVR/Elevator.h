@@ -24,16 +24,16 @@ protected:
 	void Move(float DeltaTime, float Height);
 
 	FVector OriginalPosition;
-	int CurrentFloor;
+	int CurrentFloor = 1;
 
 	UPROPERTY(EditAnywhere)
-	int MaxFloors;
+	int MaxFloors = 5;
 	
 	UPROPERTY(EditAnywhere)
-	float DistanceBetweenFloors;
+	float DistanceBetweenFloors = 350.0;
 	
 	UPROPERTY(EditAnywhere)
-	float Speed;
+	float Speed = 150.0;
 
 public:	
 	// Called every frame
