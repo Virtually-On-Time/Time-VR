@@ -24,6 +24,8 @@ protected:
 	void Move(float DeltaTime, float Height);
 
 	FVector OriginalPosition;
+
+	UPROPERTY(EditAnywhere)
 	int CurrentFloor = 1;
 
 	UPROPERTY(EditAnywhere)

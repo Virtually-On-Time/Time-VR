@@ -27,6 +27,8 @@ public:
 	void Grip();
 	void Release();
 
+	void Interaction();
+
 	UPROPERTY(VisibleAnywhere)
 	class UPrimitiveComponent* GrabbedComponent;
 

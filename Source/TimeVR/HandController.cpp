@@ -78,8 +78,6 @@ void AHandController::Grip()
 		GrabbedComponent = ComponentToGrab;
 		ComponentToGrab->SetSimulatePhysics(false); // TODO: To improve, set custom physics here
 	}
-
-	InteractionEvent(InteractionOverlap);
 }
 
 void AHandController::Release()
@@ -88,6 +86,11 @@ void AHandController::Release()
 		GrabbedComponent->SetSimulatePhysics(true);
 		GrabbedComponent = nullptr;
 	}
+}
+
+void AHandController::Interaction()
+{
+	InteractionEvent(InteractionOverlap);
 }
 
 void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor) 
