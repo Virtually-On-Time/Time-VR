@@ -38,6 +38,8 @@ public:
 
 	void OnItemPickedUp(EControllerHand Hand, int32 Id);
 
+	bool bIsVR;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -81,8 +83,6 @@ private: // Configuration Parameters
 	bool bIsFading = false;
 
 	bool bIsInPast = false;
-
-	bool bIsVR;
 
 	// References
 
