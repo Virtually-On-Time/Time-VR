@@ -26,10 +26,10 @@ protected:
 	FVector OriginalPosition;
 
 	UPROPERTY(EditAnywhere)
-	int CurrentFloor = 1;
+	int CurrentFloor = 5;
 
 	UPROPERTY(EditAnywhere)
-	int MaxFloors = 5;
+	int MaxFloors = 6;
 	
 	UPROPERTY(EditAnywhere)
 	float DistanceBetweenFloors = 350.0;
