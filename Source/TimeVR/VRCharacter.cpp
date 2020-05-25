@@ -225,12 +225,17 @@ void AVRCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	// VR Controls
 	PlayerInputComponent->BindAction(TEXT("Teleport"), IE_Released, this, &AVRCharacter::BeginTeleport);
+	PlayerInputComponent->BindAction(TEXT("Teleport"), IE_Pressed, this, &AVRCharacter::ShowTeleport);
 	PlayerInputComponent->BindAction(TEXT("TimeTravel"), IE_Released, this, &AVRCharacter::TimeTravel);
 	PlayerInputComponent->BindAction(TEXT("ResetPlayer"), IE_Released, this, &AVRCharacter::ResetPlayer);
 	PlayerInputComponent->BindAction(TEXT("GripLeft"), IE_Pressed, this, &AVRCharacter::GripLeft);
 	PlayerInputComponent->BindAction(TEXT("GripLeft"), IE_Released, this, &AVRCharacter::ReleaseLeft);
 	PlayerInputComponent->BindAction(TEXT("GripRight"), IE_Pressed, this, &AVRCharacter::GripRight);
 	PlayerInputComponent->BindAction(TEXT("GripRight"), IE_Released, this, &AVRCharacter::ReleaseRight);
+	PlayerInputComponent->BindAction(TEXT("InteractionLeft"), IE_Released, this, &AVRCharacter::InteractionLeft);
+	PlayerInputComponent->BindAction(TEXT("InteractionRight"), IE_Released, this, &AVRCharacter::InteractionRight);
+	PlayerInputComponent->BindAxis(TEXT("TeleportX"), this, &AVRCharacter::CameraX);
+	PlayerInputComponent->BindAxis(TEXT("TeleportY"), this, &AVRCharacter::CameraY);
 	
 	// Non-VR Controls
 	PlayerInputComponent->BindAxis(TEXT("MouseX"), this, &AVRCharacter::CameraX);
@@ -261,6 +266,16 @@ void AVRCharacter::CameraY(float speed)
 	Camera->AddRelativeRotation(Rotation);
 }
 
+void AVRCharacter::TPX(float speed)
+{
+	UE_LOG(LogTemp, Warning, TEXT("TPX!"));
+}
+
+void AVRCharacter::TPY(float speed)
+{
+	UE_LOG(LogTemp, Warning, TEXT("TPY!"));
+}
+
 // Switch between the levels to simlulate time travel
 void AVRCharacter::TimeTravel()
 {
@@ -280,6 +295,11 @@ void AVRCharacter::ResetPlayer()
 {
 	SetActorLocation(FVector(0.0, 0.0, 112.0));
 	bIsInPast = false;
+}
+
+void AVRCharacter::ShowTeleport()
+{
+	UE_LOG(LogTemp, Warning, TEXT("SHOW!"));
 }
 
 void AVRCharacter::BeginTeleport()

@@ -15,7 +15,6 @@ AElevator::AElevator()
 void AElevator::BeginPlay()
 {
 	Super::BeginPlay();
-	CurrentFloor = 0;
 	OriginalPosition = GetActorLocation();
 }
 

@@ -8,6 +8,7 @@
 #include "InputCoreTypes.h"
 #include "MotionControllerComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Interaction.h"
 #include "HandController.generated.h"
 
 UCLASS()
@@ -26,8 +27,13 @@ public:
 	void Grip();
 	void Release();
 
+	void Interaction();
+
 	UPROPERTY(VisibleAnywhere)
 	class UPrimitiveComponent* GrabbedComponent;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void InteractionEvent(int IntId);
 
 protected:
 	// Called when the game starts or when spawned
@@ -62,6 +68,8 @@ private:
 	bool CanPickup() const;
 	void FindPhysicsHandle();
 
+	void SetInteractionOverlap();
+
 	// Return first actor with physics
 	FHitResult GetFirstPhysicsBodyInReach() const;
 
@@ -70,4 +78,6 @@ private:
 
 	// State
 	bool bCanPickup = false;
+
+	int32 InteractionOverlap;
 };

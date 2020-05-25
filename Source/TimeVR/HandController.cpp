@@ -60,6 +60,7 @@ void AHandController::SetHand(FName Hand) {
 
 void AHandController::Grip()
 {
+
 	//if (!bCanPickup) return;
 
 	FHitResult HitResult = GetFirstPhysicsBodyInReach();
@@ -87,13 +88,19 @@ void AHandController::Release()
 	}
 }
 
+void AHandController::Interaction()
+{
+	InteractionEvent(InteractionOverlap);
+}
+
 void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor) 
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s hand hit %s"), *GetHandName(), *OverlappedActor->GetName());
 
-	bool bNewCanPickup = CanPickup();
+	bool bCanInteract = CanPickup();
+	SetInteractionOverlap();
 	
-	if (!bCanPickup && bNewCanPickup) {
+	if (!bCanPickup && bCanInteract) {
 
 		APawn* Pawn = Cast<APawn>(GetAttachParentActor());
 		if (Pawn != nullptr) {
@@ -104,12 +111,14 @@ void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 			}
 		}
 	}
-	bCanPickup = bNewCanPickup;
+	bCanPickup = bCanInteract;
 }
 
 void AHandController::ActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	bCanPickup = CanPickup();
+
+	InteractionOverlap = 0;
 }
 
 FString AHandController::GetHandName()
@@ -130,9 +139,28 @@ bool AHandController::CanPickup() const
 	for (AActor* OverlappingActor : OverlappingActors) {
 		if (OverlappingActor->ActorHasTag(TEXT("Pickup"))) {
 			return true;
+		} else if (OverlappingActor->ActorHasTag(TEXT("Interaction"))) {
+			return true;
 		}
 	}
 	return false;
+}
+
+void AHandController::SetInteractionOverlap()
+{
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors);
+
+	for (AActor* OverlappingActor : OverlappingActors) {
+		if (OverlappingActor->ActorHasTag(TEXT("Interaction"))) {
+
+			AInteraction* Interaction = Cast<AInteraction>(OverlappingActor);
+			if (Interaction != nullptr)
+			{
+				InteractionOverlap = Interaction->GetInteractionId();
+			}
+		}
+	}
 }
 
 FHitResult AHandController::GetFirstPhysicsBodyInReach() const

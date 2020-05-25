@@ -38,6 +38,8 @@ public:
 
 	void OnItemPickedUp(EControllerHand Hand, int32 Id);
 
+	bool bIsVR;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -59,12 +61,19 @@ private: // Configuration Parameters
 	void GripRight() { RightController->Grip(); }
 	void ReleaseRight() { RightController->Release(); }
 
+	void InteractionLeft() { LeftController->Interaction(); }
+	void InteractionRight() { RightController->Interaction(); }
+
 	void CameraX(float speed);
 	void CameraY(float speed);
+
+	void TPX(float speed);
+	void TPY(float speed);
 
 	void TimeTravel();
 	void ResetPlayer();
 
+	void ShowTeleport();
 	void BeginTeleport();
 	void DoTeleport();
 	void EndTeleport();
@@ -81,8 +90,6 @@ private: // Configuration Parameters
 	bool bIsFading = false;
 
 	bool bIsInPast = false;
-
-	bool bIsVR;
 
 	// References
 
