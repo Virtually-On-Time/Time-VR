@@ -2,11 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "Sound/SoundWave.h"
-#include "Components/AudioComponent.h"
-
 #include "Tablet.generated.h"
 
 UCLASS()
@@ -26,36 +21,4 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere)
-	float CurrentTime;
-	
-	UFUNCTION(BlueprintCallable)
-	void Play();
-
-	UFUNCTION(BlueprintCallable)
-	void Pause();
-
-	UFUNCTION(BlueprintCallable)
-	void NextTrack();
-
-	UFUNCTION(BlueprintCallable)
-	void PrevTrack();
-
-	UFUNCTION(BlueprintCallable)
-	void AddNewFile();
-
-	UPROPERTY(VisibleAnywhere)
-	bool bIsNewFile;
-
-	UPROPERTY(VisibleAnywhere)
-	UAudioComponent* AudioComponent;
-
-	UPROPERTY(VisibleAnywhere)
-	int CurrentSound;
-	
-	UPROPERTY(VisibleAnywhere)
-	int MaxAllowedSound;
-
-	UPROPERTY(EditAnywhere, Category = "AudioFiles")
-	TArray<USoundWave*> Sounds;
 };
