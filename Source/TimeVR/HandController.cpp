@@ -159,6 +159,7 @@ void AHandController::SetInteractionOverlap()
 			{
 				InteractionOverlap = Interaction->GetInteractionId();
 				InteractionEvent(InteractionOverlap);
+				return;
 			}
 		}
 	}
