@@ -41,6 +41,10 @@ protected:
 
 private:
 
+	void UnblockInteraction();
+
+	bool bInteractAllowed = true;
+
 	// Parent
 	class AVRCharacter* Character = nullptr;
 
