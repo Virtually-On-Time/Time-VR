@@ -70,6 +70,7 @@ private: // Configuration Parameters
 	void TPY(float speed);
 
 	void TimeTravel();
+	void TimeTravelEnd();
 	void ResetPlayer();
 
 	void ShowTeleport();

@@ -226,7 +226,8 @@ void AVRCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	// VR Controls
 	PlayerInputComponent->BindAction(TEXT("Teleport"), IE_Released, this, &AVRCharacter::BeginTeleport);
 	PlayerInputComponent->BindAction(TEXT("Teleport"), IE_Pressed, this, &AVRCharacter::ShowTeleport);
-	PlayerInputComponent->BindAction(TEXT("TimeTravel"), IE_Released, this, &AVRCharacter::TimeTravel);
+	PlayerInputComponent->BindAction(TEXT("TimeTravel"), IE_Pressed, this, &AVRCharacter::TimeTravel);
+	PlayerInputComponent->BindAction(TEXT("TimeTravel"), IE_Released, this, &AVRCharacter::TimeTravelEnd);
 	PlayerInputComponent->BindAction(TEXT("ResetPlayer"), IE_Released, this, &AVRCharacter::ResetPlayer);
 	PlayerInputComponent->BindAction(TEXT("GripLeft"), IE_Pressed, this, &AVRCharacter::GripLeft);
 	PlayerInputComponent->BindAction(TEXT("GripLeft"), IE_Released, this, &AVRCharacter::ReleaseLeft);
@@ -279,15 +280,29 @@ void AVRCharacter::TPY(float speed)
 // Switch between the levels to simlulate time travel
 void AVRCharacter::TimeTravel()
 {
+	if (bIsInPast) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("TP_PRESS!"));
+
 	FVector currentLocation = GetActorLocation();
-	if (bIsInPast) {
-		currentLocation.Y -= UnitsBetweenlevels;
-	}
-	else {
-		currentLocation.Y += UnitsBetweenlevels;
-	}
+	currentLocation.Y += UnitsBetweenlevels;
 	SetActorLocation(currentLocation);
-	bIsInPast = !bIsInPast;
+
+	bIsInPast = true;
+}
+
+// Switch between the levels to simlulate time travel
+void AVRCharacter::TimeTravelEnd()
+{
+	if (!bIsInPast) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("TP_RELEASE!"));
+
+	FVector currentLocation = GetActorLocation();
+	currentLocation.Y -= UnitsBetweenlevels;
+	SetActorLocation(currentLocation);
+
+	bIsInPast = false;
 }
 
 // Reset the play location (in case you fall off the map)
