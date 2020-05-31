@@ -90,7 +90,7 @@ void AHandController::Release()
 
 void AHandController::Interaction()
 {
-	InteractionEvent(InteractionOverlap);
+	//InteractionEvent(InteractionOverlap);
 }
 
 void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor) 
@@ -158,6 +158,7 @@ void AHandController::SetInteractionOverlap()
 			if (Interaction != nullptr)
 			{
 				InteractionOverlap = Interaction->GetInteractionId();
+				InteractionEvent(InteractionOverlap);
 			}
 		}
 	}
