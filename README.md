@@ -20,6 +20,15 @@ For the moment you will need to build the project locally in order to play, but 
 - In visual studio, hit F7, or navigate to `Build > Compile`
 - Once this completes, you can open the `TimeVR.uproject` file, which will open the Unreal Engine project
 
+#### Controls
+
+Built for Valve Index controllers, Vive and Oculus controllers should work but haven't been tested
+
+- Interactions: Simply touch buttons to interact, no need to press a button
+- Teleport movement: Flick the right stick up or press B on a Valve Index controller to teleport the player to a new position
+- See back in time: To view the ship as you remember it from the past, press and hold A
+- Pickup items: To pick up items, grip the controller
+
 #### Contributing to the project
 
 If you are familiar with Git, feel free to submit PRs with any changes or addition. If not, someone in the channel should be able to show you how to get started. Finally, feel free to simply share assets ect in the channel if that's preferred.
