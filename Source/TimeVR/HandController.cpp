@@ -4,6 +4,7 @@
 #include "HandController.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Pawn.h"
+#include "TimerManager.h"
 #include "VRCharacter.h"
 #include "GameFramework/PlayerController.h"
 
@@ -26,6 +27,11 @@ void AHandController::BeginPlay()
 	// Subscribe to overlap events
 	OnActorBeginOverlap.AddDynamic(this, &AHandController::ActorBeginOverlap);
 	OnActorEndOverlap.AddDynamic(this, &AHandController::ActorEndOverlap);
+}
+
+void AHandController::UnblockInteraction()
+{
+	bInteractAllowed = true;
 }
 
 // Called every frame
@@ -90,7 +96,7 @@ void AHandController::Release()
 
 void AHandController::Interaction()
 {
-	InteractionEvent(InteractionOverlap);
+	//InteractionEvent(InteractionOverlap);
 }
 
 void AHandController::ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor) 
@@ -148,6 +154,8 @@ bool AHandController::CanPickup() const
 
 void AHandController::SetInteractionOverlap()
 {
+	if (!bInteractAllowed) return;
+
 	TArray<AActor*> OverlappingActors;
 	GetOverlappingActors(OverlappingActors);
 
@@ -158,6 +166,12 @@ void AHandController::SetInteractionOverlap()
 			if (Interaction != nullptr)
 			{
 				InteractionOverlap = Interaction->GetInteractionId();
+				InteractionEvent(InteractionOverlap);
+				bInteractAllowed = false;
+
+				FTimerHandle Handle;
+				GetWorldTimerManager().SetTimer(Handle, this, &AHandController::UnblockInteraction, .5f, false);
+				return;
 			}
 		}
 	}

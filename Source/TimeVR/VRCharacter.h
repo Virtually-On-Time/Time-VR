@@ -2,7 +2,6 @@
 
 #pragma once
 
-
 #include "CoreMinimal.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -71,6 +70,7 @@ private: // Configuration Parameters
 	void TPY(float speed);
 
 	void TimeTravel();
+	void TimeTravelEnd();
 	void ResetPlayer();
 
 	void ShowTeleport();
